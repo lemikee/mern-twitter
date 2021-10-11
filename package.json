@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "server": "nodemon app.js",
+    "server:debug": "nodemon --inspect app.js",
     "start": "node app.js"
   },
   "repository": {
@@ -27,7 +28,7 @@
     "password": "^0.1.1",
     "validator": "^13.6.0"
   },
-  "devDependencies": { 
+  "devDependencies": {
     "nodemon": "^2.0.13"
   }
 }
