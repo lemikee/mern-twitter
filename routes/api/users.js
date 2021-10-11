@@ -6,6 +6,8 @@ const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const keys = require("../../config/keys");
 const jwt = require("jsonwebtoken");
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 router.get("/test", (req, res) => {
   // this is one route
@@ -14,6 +16,14 @@ router.get("/test", (req, res) => {
 
 router.post("/register", (req, res) => {
   // note that this is a POST request, "router.post"
+
+  const { errors, isValid } = validateRegisterInput(req.body);
+
+  if (!isValid) {
+    // from line 20, recall, validation return errors, and isValid which is a boolean
+    return res.status(400).json(errors);
+  }
+
   User.findOne({ email: req.body.email }) // use User model, check if user already exists
     .then((user) => {
       if (user) {
@@ -54,6 +64,12 @@ router.post("/login", (req, res) => {
   const email = req.body.email; // extract email and password
   const password = req.body.password;
 
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   User.findOne({ email }) // findOne returns a single object, find returns an array
     .then((user) => {
       if (!user) {
@@ -77,7 +93,8 @@ router.post("/login", (req, res) => {
             (err, token) => {
               res.json({
                 success: true,
-                token: "Bearer " + token })
+                token: "Bearer " + token,
+              });
             }
           );
         } else {
