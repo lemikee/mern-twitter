@@ -8,19 +8,18 @@ const users = require("./routes/api/users");
 const tweets = require("./routes/api/tweets");
 const User = require("./models/User");
 const bodyParser = require("body-parser"); // tells our app what sorts of requests it should respond to
+const passport = require("passport");
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
 
 mongoose
   .connect(db, { useNewUrlParser: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
-app.use(
-  bodyParser.urlencoded({ // app will respond to requests from other software like postman
-    extended: false,
-  })
-);
-
-app.use(bodyParser.json()); // app will respond to json
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   const user = new User({
